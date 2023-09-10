@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"type="text/css" href="style.css">
+    <title>เกมคณิตศาสตร์</title>
+
+    <style>
+        body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.block {
+    background-color: aquamarine;
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border: 3px solid black;
+    border-radius: 5px;
+    text-align: center;
+    margin: 10px;
+    line-height: 70px;
+    font-size: 26px;
+}
+    </style>
+
+</head>
+
+<body>
+    <h1>เกมคณิตศาสตร์</h1>
+    <h2 style="font-size: 16px; color: blue;">ให้นักเรียนทำโจทย์ปัญหาต่อไปนี้10ข้อ เพื่อประเมินว่าต้นเองนั้นคือ...</h2>
+
+    <div class="contrainer">
+    <div>
+        <div class="block" id="randnum1">กำลังสุ่ม</div>
+        <div class="block" id="randoper">กำลังสุ่ม</div>
+        <div class="block" id="randnum2">กำลังสุ่ม</div>
+    </div>
+
+    <div>
+        <label for="answer">คำตอบ:</label>
+        <input type="text" id="answer" name="answer" placeholder="กรอกคำตอบที่นี่">
+        <button onclick="checkAnswer()">ตรวจสอบคำตอบ</button>
+    </div>
+    <div id="result"></div>
+    <div id="score">คะแนน: 0</div>
+
+    <button onclick="startGame()">เริ่มทำโจทย์ใหม่</button>
+
+    </div>
+
+    <script>
+        var score = 0;
+        var questionCount = 0;
+
+        function startGame() {
+            score = 0;
+            questionCount = 0;
+            updateScore();
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            var randomNumber1 = Math.floor(Math.random() * 11); // กำหนดขนาดสุ่มตัวเลข 0-10
+            var randomNumber2 = Math.floor(Math.random() * 11); // กำหนดขนาดสุ่มตัวเลข 0-10
+
+            var operators = ['+', '-', '*', '/']; // สุ่มตัวดำเนินการ
+            var randomOperator = operators[Math.floor(Math.random() * operators.length)]; // สุ่มตัวดำเนินการ
+
+            document.getElementById('randnum1').textContent = ' ' + randomNumber1;
+            document.getElementById('randoper').textContent = ' ' + randomOperator;
+            document.getElementById('randnum2').textContent = ' ' + randomNumber2;
+
+            document.getElementById('answer').value = ''; // เคลียร์ช่องใส่คำตอบ
+        }
+
+        function checkAnswer() {
+            var userAnswer = parseFloat(document.getElementById('answer').value);
+            var randomNumber1 = parseFloat(document.getElementById('randnum1').textContent.trim());
+            var randomNumber2 = parseFloat(document.getElementById('randnum2').textContent.trim());
+            var randomOperator = document.getElementById('randoper').textContent.trim();
+
+            var correctAnswer = calculateCorrectAnswer(randomNumber1, randomNumber2, randomOperator);
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                questionCount++;
+                document.getElementById('result').textContent = 'คำตอบถูกต้อง!';
+            } else {
+                questionCount++;
+                document.getElementById('result').textContent = 'คำตอบไม่ถูกต้อง';
+            }
+
+            updateScore();
+
+            
+            // ตรวจสอบว่าทำครบ 10 ข้อแล้ว
+    if (questionCount >= 10) {
+        // คำนวณคะแนนสุทธิ
+        var finalScore = Math.floor((score / 10) * 100); // 1 คะแนนต่อ 10 ข้อที่ถูกต้อง
+
+        var message = 'คะแนนสุทธิ: ' + finalScore + '%';
+
+        // แจ้งเตือนคะแนนสุทธิและสไตล์
+        if (finalScore >= 90) {
+            message += ' คุณคือ อัลเบิร์ต ไอน์สไตน์มาเกิดใหม่';
+        } else if (finalScore >= 70) {
+            message += ' คุณคือลูกหลานอัลเบิร์ต ไอน์สไตน์';
+        } else if (finalScore >= 50) {
+            message += ' ลูกศิษคนโปรดอัลเบิร์ต ไอน์สไตน์';
+        } else {
+            message += ' อัลเบิร์ต ไอน์สไตน์สอนคุณแล้วแต่ไม่จำ';
+        }
+
+        alert(message);
+        // รีเซ็ตคะแนนและเริ่มเกมใหม่
+        score = 0;
+        questionCount = 0;
+        updateScore();
+    } else {
+        generateQuestion();
+    }
+}
+        
+
+        function calculateCorrectAnswer(num1, num2, operator) {
+            switch (operator) {
+                case '+':
+                    return num1 + num2;
+                case '-':
+                    return num1 - num2;
+                case '*':
+                    return num1 * num2;
+                case '/':
+                    return num1 / num2;
+                default:
+                    return NaN;
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = 'คะแนน: ' + score;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
